@@ -1,12 +1,39 @@
 body {
   background-color: black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  color: white;
+  font-family: 'Courier New', monospace;
+  text-align: center;
   margin: 0;
+  padding-top: 20px;
+}
+
+h1 {
+  color: #00ffcc;
+  margin-bottom: 10px;
+}
+
+#marcadores {
+  font-size: 20px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-around;
+  max-width: 600px;
+  margin: 0 auto 10px auto;
 }
 
 canvas {
   border: 2px solid white;
+  display: block;
+  margin: 0 auto;
+  background-color: #111;
+}
+
+#mensaje {
+  margin-top: 20px;
+  font-size: 18px;
+  color: red;
+}
+
+.oculto {
+  display: none;
 }

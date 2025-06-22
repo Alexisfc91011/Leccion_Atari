@@ -1,96 +1,37 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
+// Pala
 let paddleY = 150;
 const paddleHeight = 100;
 const paddleWidth = 10;
 
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "white";
-  ctx.fillRect(0, paddleY, paddleWidth, paddleHeight);
-}
-
-setInterval(draw, 1000 / 60);
-
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
-
-let paddleY = 150;
-const paddleHeight = 100;
-const paddleWidth = 10;
-
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "white";
-  ctx.fillRect(0, paddleY, paddleWidth, paddleHeight);
-}
-
-canvas.addEventListener("mousemove", function(event) {
-  const mouseY = event.clientY - canvas.getBoundingClientRect().top;
-  paddleY = mouseY - paddleHeight / 2;
-});
-
-setInterval(draw, 1000 / 60);
-
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
-
-let paddleY = 150;
-const paddleHeight = 100;
-const paddleWidth = 10;
-
+// Pelota
 let ballX = 300;
 let ballY = 200;
 let ballSpeedX = 4;
 let ballSpeedY = 4;
 const ballRadius = 10;
 
+// Puntaje y vidas
+let score = 0;
+let vidas = 3;
+
+// Elementos del DOM
+const scoreDisplay = document.getElementById("score");
+const vidasDisplay = document.getElementById("vidas");
+const mensaje = document.getElementById("mensaje");
+
 function draw() {
+  if (vidas <= 0) return;
+
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Pala
+  // Dibujar pala
   ctx.fillStyle = "white";
   ctx.fillRect(0, paddleY, paddleWidth, paddleHeight);
 
-  // Pelota
-  ctx.beginPath();
-  ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Movimiento pelota
-  ballX += ballSpeedX;
-  ballY += ballSpeedY;
-}
-
-canvas.addEventListener("mousemove", function(event) {
-  const mouseY = event.clientY - canvas.getBoundingClientRect().top;
-  paddleY = mouseY - paddleHeight / 2;
-});
-
-setInterval(draw, 1000 / 60);
-
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
-
-let paddleY = 150;
-const paddleHeight = 100;
-const paddleWidth = 10;
-
-let ballX = 300;
-let ballY = 200;
-let ballSpeedX = 4;
-let ballSpeedY = 4;
-const ballRadius = 10;
-
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // Pala
-  ctx.fillStyle = "white";
-  ctx.fillRect(0, paddleY, paddleWidth, paddleHeight);
-
-  // Pelota
+  // Dibujar pelota
   ctx.beginPath();
   ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
   ctx.fill();
@@ -99,24 +40,50 @@ function draw() {
   ballX += ballSpeedX;
   ballY += ballSpeedY;
 
-  // Rebote arriba y abajo
+  // Rebote vertical
   if (ballY - ballRadius < 0 || ballY + ballRadius > canvas.height) {
     ballSpeedY *= -1;
   }
 
-  // Rebote con la pala
+  // Colisión con pala
   if (
     ballX - ballRadius < paddleWidth &&
     ballY > paddleY &&
     ballY < paddleY + paddleHeight
   ) {
     ballSpeedX *= -1;
+    score++;
+    scoreDisplay.textContent = score;
+  }
+
+  // Pérdida de vida
+  if (ballX < 0) {
+    vidas--;
+    vidasDisplay.textContent = vidas;
+    resetBall();
+    if (vidas === 0) {
+      mensaje.classList.remove("oculto");
+    }
+  }
+
+  // Rebote lado derecho
+  if (ballX + ballRadius > canvas.width) {
+    ballSpeedX *= -1;
   }
 }
 
-canvas.addEventListener("mousemove", function(event) {
+function movePaddle(event) {
   const mouseY = event.clientY - canvas.getBoundingClientRect().top;
   paddleY = mouseY - paddleHeight / 2;
-});
+}
 
+function resetBall() {
+  ballX = canvas.width / 2;
+  ballY = canvas.height / 2;
+  ballSpeedX = 4;
+  ballSpeedY = 4;
+}
+
+canvas.addEventListener("mousemove", movePaddle);
 setInterval(draw, 1000 / 60);
+
